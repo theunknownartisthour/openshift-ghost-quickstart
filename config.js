@@ -49,13 +49,36 @@ config = {
     // Configure your URL and mail settings here
     production: {
         url: 'http://'+process.env.OPENSHIFT_APP_DNS,
-        mail: {},
+		// Visit http://support.ghost.org/mail for instructions
+		// Leave Commented to use Default
+        mail: {
+			//transport: 'SMTP',
+            //options: {
+            //    service: 'Mailgun',
+            //    auth: {
+            //        user: '', // mailgun username
+            //        pass: ''  // mailgun password
+            //    }
+            //}
+		},
         database: {
             client: 'sqlite3',
             connection: {
                 filename: path.join(__dirname, '/content/data/ghost.db')
             },
             debug: false
+            //Add MySQL and then comment out above and uncomment out below
+            //client: 'mysql',
+            //connection: {
+            //    host: process.env.OPENSHIFT_MYSQL_DB_HOST,
+            //    port: process.env.OPENSHIFT_MYSQL_DB_PORT,
+            //    user: process.env.OPENSHIFT_MYSQL_DB_USERNAME,
+            //    password: process.env.OPENSHIFT_MYSQL_DB_PASSWORD,
+            //    database: process.env.OPENSHIFT_APP_NAME,
+            //    charset: 'utf8'
+            //},
+            //debug: false
+			
         },
         server: {
             // Host to be passed to node's `net.Server#listen()`

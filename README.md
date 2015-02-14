@@ -17,17 +17,31 @@ Where $appname is the name of your application.  This was due to the pre_start_n
 
 The easiest way is to use the following command, make sure that you run 'gem update rhc' first so that you have the newest version:
 
-	rhc app create ghost nodejs-0.10 --env NODE_ENV=production --from-code https://github.com/openshift-quickstart/openshift-ghost-quickstart.git
+	rhc app create ghost nodejs-0.10 --env NODE_ENV=production --from-code https://github.com/theunknownartisthour/openshift-ghost-quickstart.git
 
 'ghost' will be the name of your application.  
+
+You can create a scalable instance of Ghost by doing the following:
+
+    rhc app create ghost nodejs-0.10 mysql-5.5 --env NODE_ENV=production --from-code https://github.com/theunknownartisthour/openshift-ghost-quickstart.git --scaling
+	
+And then edit config.js:
+
+	client: 'mysql',
+	connection: {
+		host: process.env.OPENSHIFT_MYSQL_DB_HOST,
+		port: process.env.OPENSHIFT_MYSQL_DB_PORT,
+		user: process.env.OPENSHIFT_MYSQL_DB_USERNAME,
+		password: process.env.OPENSHIFT_MYSQL_DB_PASSWORD,
+		database: process.env.OPENSHIFT_APP_NAME,
+		charset: 'utf8'
+	},
+	debug: false
 
 Note these OpenShift specific changes:
 
 1. The content/data and content/images directories have been removed.  They are created on the server and symlinked to your $OPENSHIFT\_DATA\_DIR so that posts and uploaded images will persist across 'git pushes'
-2. Even though the node.js cartridge itself is scalable, this application will not play nice with scaling right now because it is using sqlite3 as the database (which is a file store), and the images are stored on disk, and since OpenShift does not currently support shared physical disk storage across scaled gears, this cartridge will not scale.  We are working on a solution for this.
-3. This quickstart currently is not setup for using MySQL, but it may be updated in the future, or another quickstart provided.  That will eliminate one of the scaling concerns.
-4. If you use a custom domain, modify the production url field in config.js file.
-
+2. If you use a custom domain, modify the production url field in config.js file.
 
 ## Getting Involved
 
